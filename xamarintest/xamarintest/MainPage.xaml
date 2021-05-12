@@ -4,7 +4,7 @@
              x:Class="xamarintest.MainPage">
 
     <AbsoluteLayout>
-        <ImageButton Source="{Binding MainImageSource}"
+        <ImageButton Source="{Binding MainImageSource}"  Command="{Binding TakePhotoCommand}"
                      AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All"/>
     </AbsoluteLayout>
 
