@@ -13,6 +13,7 @@ namespace xamarintest
         public MainPage()
         {
             InitializeComponent();
+            BindingContext = new Model();
         }
     }
 }
