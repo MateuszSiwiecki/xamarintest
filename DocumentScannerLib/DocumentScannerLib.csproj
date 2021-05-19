@@ -54,6 +54,12 @@
     <TransformFile Include="Transforms\EnumFields.xml" />
     <TransformFile Include="Transforms\EnumMethods.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OpenCvLib\OpenCvLib.csproj">
+      <Project>{1739691b-6b98-4d88-ab4c-a4d8f5cad2ac}</Project>
+      <Name>OpenCvLib</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.Bindings.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
