@@ -37,7 +37,7 @@ namespace OpenCvLib.Tests
         [Fact()]
         public void OpenCvCorrectLoadTest_ShouldLoadAndSaveImage_NoChangesToImage()
         {
-            var testObject = MainClass.LoadImage(TestImage);            
+            var testObject = MainClass.LoadImage(TestImage);
             Assert.NotNull(testObject);
 
             SaveAndCheckIfSavedCorrect(testObject);
@@ -47,6 +47,15 @@ namespace OpenCvLib.Tests
             var savePath = TestImageDirectory(name);
             MainClass.SaveImage(savePath, result);
             Assert.True(File.Exists(savePath));
+        }
+
+        [Fact()]
+        public void ProcessImageTest()
+        {
+            var testObject = MainClass.LoadImage(TestImage);
+            var result = MainClass.ProcessImage(testObject);
+
+            SaveAndCheckIfSavedCorrect(result);
         }
     }
 }

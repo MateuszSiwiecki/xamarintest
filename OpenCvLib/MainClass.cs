@@ -8,10 +8,16 @@ namespace OpenCvLib
     public static class MainClass
     {        
 
-        public static void ProcessImage(string filePath)
+        public static Mat ProcessImage(Mat image)
         {
-            var image = LoadImage(filePath);
-            var result = image.PerspectiveWrapping().TransformImage();
+            var grayOutput = new Mat();
+            var bilateralFilter = new Mat();
+            var edgedResult = new Mat();
+            Cv2.CvtColor(image, grayOutput, ColorConversionCodes.BGR2GRAY);
+            Cv2.BilateralFilter(grayOutput, bilateralFilter, 11, 17, 17);
+            Cv2.Canny(bilateralFilter, edgedResult, 30, 200);
+             
+            return edgedResult;
         }
         public static Mat LoadImage(string filePath) => Cv2.ImRead(filePath);
         public static void SaveImage(string filePath, Mat imageToSave) => Cv2.ImWrite(filePath, imageToSave);
@@ -33,15 +39,17 @@ namespace OpenCvLib
             // return the rotated image
             return warpAffineResult;
         }
-        //public static Mat Resize(Mat image, double newWidth, double newHigh, InterpolationFlags inter)
-        //{
-        //    // grab the dimensions of the image
-        //    var w = image.Width;
-        //    var h = image.Height;
+        public static Mat Resize(Mat image, double newWidth, double newHigh, InterpolationFlags inter)
+        {
+            // grab the dimensions of the image
+            var w = image.Width;
+            var h = image.Height;
 
-        //    var result = new Mat();
-        //    Cv2.Resize(image, result, interpolation: inter);
-        //}
+            var result = new Mat();
+            Cv2.Resize(image, result, new Size(), interpolation: inter);
+
+            return result;
+        }
 
         public static void ScreenFinder(Mat image)
         {
