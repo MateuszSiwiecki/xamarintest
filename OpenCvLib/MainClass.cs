@@ -7,12 +7,14 @@ namespace OpenCvLib
 {
     public static class MainClass
     {        
+
         public static void ProcessImage(string filePath)
         {
             var image = LoadImage(filePath);
             var result = image.PerspectiveWrapping().TransformImage();
         }
         public static Mat LoadImage(string filePath) => Cv2.ImRead(filePath);
+        public static void SaveImage(string filePath, Mat imageToSave) => Cv2.ImWrite(filePath, imageToSave);
         public static Mat Rotate(Mat image, double angle, Point2f? center = null, double scale = 1.0)
         {
             // grab the dimensions of the image
@@ -29,8 +31,17 @@ namespace OpenCvLib
             var warpAffineResult = new Mat();
             Cv2.WarpAffine(image, warpAffineResult, rotationMatrix2d, new Size((int)(w * scale),(int)( h * scale)));
             // return the rotated image
-            return image ;
+            return warpAffineResult;
         }
+        //public static Mat Resize(Mat image, double newWidth, double newHigh, InterpolationFlags inter)
+        //{
+        //    // grab the dimensions of the image
+        //    var w = image.Width;
+        //    var h = image.Height;
+
+        //    var result = new Mat();
+        //    Cv2.Resize(image, result, interpolation: inter);
+        //}
 
         public static void ScreenFinder(Mat image)
         {
