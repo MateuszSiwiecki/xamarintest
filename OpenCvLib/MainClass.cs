@@ -10,13 +10,17 @@ namespace OpenCvLib
 
         public static Mat ProcessImage(Mat image)
         {
+            return image;
+        }
+        public static Mat ProccessToGrayContuour(Mat image)
+        {
             var grayOutput = new Mat();
             var bilateralFilter = new Mat();
             var edgedResult = new Mat();
             Cv2.CvtColor(image, grayOutput, ColorConversionCodes.BGR2GRAY);
             Cv2.BilateralFilter(grayOutput, bilateralFilter, 11, 17, 17);
             Cv2.Canny(bilateralFilter, edgedResult, 30, 200);
-             
+
             return edgedResult;
         }
         public static Mat LoadImage(string filePath) => Cv2.ImRead(filePath);
@@ -39,14 +43,14 @@ namespace OpenCvLib
             // return the rotated image
             return warpAffineResult;
         }
-        public static Mat Resize(Mat image, double newWidth, double newHigh, InterpolationFlags inter)
+        public static Mat Resize(Mat image, double newWidth, double newHigh, InterpolationFlags inter = InterpolationFlags.Linear)
         {
             // grab the dimensions of the image
             var w = image.Width;
             var h = image.Height;
 
             var result = new Mat();
-            Cv2.Resize(image, result, new Size(), interpolation: inter);
+            Cv2.Resize(image, result, new Size(newWidth, newHigh), interpolation: inter);
 
             return result;
         }

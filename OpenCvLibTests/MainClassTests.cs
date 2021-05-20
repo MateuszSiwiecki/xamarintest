@@ -11,8 +11,7 @@ namespace OpenCvLib.Tests
     public class MainClassTests
     {
         private static string TestImage => @"C:\Users\mateu\OneDrive\Desktop\QR\documents\recepta_test1.png";
-        private static string TestImageDirectory([CallerMemberName] string testName = "") => TestImageDirectory(0, testName);
-        private static string TestImageDirectory(int iteration, [CallerMemberName] string testName = "")
+        private static string TestImageDirectory(string additionalInfo = "", [CallerMemberName] string testName = "")
         {
             var path = @"C:\Users\mateu\OneDrive\Desktop\QR\documents";
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
@@ -20,7 +19,9 @@ namespace OpenCvLib.Tests
             path = Path.Combine(path, testName);
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 
-            return Path.Combine(path, $"{iteration}test.png");
+            var nameOfFile = string.IsNullOrWhiteSpace(additionalInfo) ? testName : $"{additionalInfo}_{testName}.png";
+
+            return Path.Combine(path, nameOfFile);
         }
         [Fact()]
         public void RotateTest()
@@ -42,20 +43,35 @@ namespace OpenCvLib.Tests
 
             SaveAndCheckIfSavedCorrect(testObject);
         }
-        private static void SaveAndCheckIfSavedCorrect(OpenCvSharp.Mat result, [CallerMemberName] string name = "")
+        private static void SaveAndCheckIfSavedCorrect(OpenCvSharp.Mat result, string additionalInfo = "", [CallerMemberName] string name = "")
         {
-            var savePath = TestImageDirectory(name);
+            var savePath = TestImageDirectory(additionalInfo, name);
             MainClass.SaveImage(savePath, result);
             Assert.True(File.Exists(savePath));
         }
 
         [Fact()]
-        public void ProcessImageTest()
+        public void ProccessToGrayContuourTest()
         {
             var testObject = MainClass.LoadImage(TestImage);
-            var result = MainClass.ProcessImage(testObject);
+            var result = MainClass.ProccessToGrayContuour(testObject);
 
             SaveAndCheckIfSavedCorrect(result);
+        }
+
+        [InlineData(300, 300)]
+        [InlineData(3000, 300)]
+        [InlineData(300, 3000)]
+        [InlineData(100, 400)]
+        [InlineData(400, 100)]
+        [InlineData(1000, 1000)]
+        [Theory()]
+        public void ResizeTest(int dimensionX, int dimensionY)
+        {
+            var testObject = MainClass.LoadImage(TestImage);
+            var result = MainClass.Resize(testObject, dimensionX, dimensionY);
+
+            SaveAndCheckIfSavedCorrect(result, $"{dimensionX}x{dimensionY}");
         }
     }
 }
