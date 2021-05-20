@@ -23,6 +23,37 @@ namespace OpenCvLib
 
             return edgedResult;
         }
+        public static Point[] FindContours_SortedContours(Mat image)
+        {
+            Cv2.FindContours(image, out var foundedContour, out var hierarchy, RetrievalModes.Tree, ContourApproximationModes.ApproxSimple);
+            var sortedContour = foundedContour.OrderByDescending(ContourArea).Where((x, y) => y < 8).ToArray();
+
+            List<Point[]> result = new List<Point[]>();
+            foreach (var contour in sortedContour)
+            {
+                var contourArea = ContourArea(contour);
+                var peri = Cv2.ArcLength(contour, true);
+
+                var approx = Cv2.ApproxPolyDP(contour.AsEnumerable(), 0.015 * peri, true);
+
+                result.Add(approx);
+            }
+
+            return foundedContour[2];
+        }
+        public static double ContourArea(Point[] x) => Cv2.ContourArea(x, true);
+        public static Mat DrawContour(Mat image, IEnumerable<IEnumerable<Point>> contours)
+        {
+            Cv2.DrawContours(image, contours, -1, Scalar.Red, 5);
+
+            return image;
+        }
+        public static Mat DrawContour(Mat image, IEnumerable<Point> countour)
+        {
+            Cv2.DrawContours(image, new List<IEnumerable<Point>> { countour }, -1, Scalar.Red, 5);
+
+            return image;
+        }
         public static Mat LoadImage(string filePath) => Cv2.ImRead(filePath);
         public static void SaveImage(string filePath, Mat imageToSave) => Cv2.ImWrite(filePath, imageToSave);
         public static Mat Rotate(Mat image, double angle, Point2f? center = null, double scale = 1.0)
@@ -55,26 +86,5 @@ namespace OpenCvLib
             return result;
         }
 
-        public static void ScreenFinder(Mat image)
-        {
-            Cv2.Resize(image, image, new Size());
-        }
-        public static double[] OrderPoints(IEnumerable<Tuple<double, double>> coordinates)
-        {
-            var table = new double[4];
-            //table[0] = coordinates.OrderBy(x => x.Item1).Max(x => x)
-
-            return table;
-        }
-        public static Mat PerspectiveWrapping(this Mat image)
-        {
-
-            return image;
-        }
-        public static Mat TransformImage(this Mat image)
-        {
-
-            return image;
-        }
     }
 }
