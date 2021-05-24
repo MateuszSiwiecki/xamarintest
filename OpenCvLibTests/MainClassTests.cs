@@ -94,19 +94,29 @@ namespace OpenCvLib.Tests
 
             using var result = MainClass.DrawContour(testObject.Clone(), contours);
             SaveAndCheckIfSavedCorrect(result);
+        }
 
+        private static Point[] BiggestContourExec(Mat testObject)
+        {
+            using var testObject2 = MainClass.ProccessToGrayContuour(testObject);
+            return MainClass.FindContours_BiggestContour(testObject2);
         }
         [Fact()]
-        public void FindContours_BiggestContourTest()
+        public void FindContours_DrawContour_BiggestContourTest()
         {
             using var testObject = MainClass.LoadImage(TestImage);
-            using var testObject2 = MainClass.ProccessToGrayContuour(testObject);
-            var contours = MainClass.FindContours_SortedContours(testObject2);
-
+            var contours = BiggestContourExec(testObject);
 
             using var result = MainClass.DrawContour(testObject.Clone(), contours);
             SaveAndCheckIfSavedCorrect(result);
+        }
+        [Fact()]
+        public void FindContours_NumberOfPoints_BiggestContourTest()
+        {
+            using var testObject = MainClass.LoadImage(TestImage);
+            var contours = BiggestContourExec(testObject);
 
+            Assert.True(contours.Length == 4);
         }
 
         [InlineData(10, 1000, 10, 1000)]
@@ -123,14 +133,6 @@ namespace OpenCvLib.Tests
             });
 
             SaveAndCheckIfSavedCorrect(result, $"{xLeft}x{xRight}x{yUp}x{yDown}");
-        }
-
-        [Fact]
-        public void FactMethodName()
-        {
-            output.WriteLine($"{ Cv2.GetVersionMajor() }. {Cv2.GetVersionMinor()}");
-            Assert.True(
-            Cv2.GetVersionMajor() == 3);
         }
     }
 }

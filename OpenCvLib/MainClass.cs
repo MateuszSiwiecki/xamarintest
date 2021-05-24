@@ -6,10 +6,12 @@ using System.Linq;
 namespace OpenCvLib
 {
     public static class MainClass
-    {        
-
+    {
+        public static Mat ProcessImage(string path) => ProcessImage(new Mat(path));
         public static Mat ProcessImage(Mat image)
         {
+            using var grayImage = ProccessToGrayContuour(image.Clone());
+            var contoursOfDocument = FindContours_BiggestContour(grayImage);
             return image;
         }
         public static Mat ProccessToGrayContuour(Mat image)
@@ -23,44 +25,47 @@ namespace OpenCvLib
             Cv2.Canny(bilateralFilter, edgedResult, 30, 200);
             Cv2.Dilate(edgedResult, dilateResult, new Mat());
 
+            grayOutput.Dispose();
+            bilateralFilter.Dispose();
+            edgedResult.Dispose();
+
             //return edgedResult;
             return dilateResult;
         }
         public static List<Point[]> FindContours_SortedContours(Mat image)
         {
             Cv2.FindContours(image, out var foundedContour, out var hierarchy, RetrievalModes.Tree, ContourApproximationModes.ApproxNone);
-            var sortedContour = foundedContour.OrderByDescending(ContourArea).Where((x, y) => y < 1).ToArray();
+            var sortedContour = foundedContour.OrderByDescending(ContourArea).ToArray();
 
             List<Point[]> result = new List<Point[]>();
             foreach (var contour in sortedContour)
             {
-                var contourArea = ContourArea(contour);
                 var peri = Cv2.ArcLength(contour, true);
 
                 var approx = Cv2.ApproxPolyDP(contour.AsEnumerable(), 0.015 * peri, true);
 
                 result.Add(approx);
             }
-
-
             return result;
         }
         public static Point[] FindContours_BiggestContour(Mat image)
         {
-            Cv2.FindContours(image, out var foundedContour, out var hierarchy, RetrievalModes.Tree, ContourApproximationModes.ApproxNone);
-            return foundedContour.OrderByDescending(ContourArea).First();
+            Cv2.FindContours(image, out var foundedContours, out var hierarchy, RetrievalModes.Tree, ContourApproximationModes.ApproxNone);
+            var contourOfDocument = foundedContours.OrderByDescending(ContourArea).First();
+            var peri = Cv2.ArcLength(contourOfDocument, true);
+
+            var approx = Cv2.ApproxPolyDP(contourOfDocument.AsEnumerable(), 0.015 * peri, true);
+            return approx;
         }
         public static double ContourArea(Point[] x) => Cv2.ContourArea(x, true);
         public static Mat DrawContour(Mat image, IEnumerable<IEnumerable<Point>> contours)
         {
             Cv2.DrawContours(image, contours, -1, Scalar.Red, 5);
-
             return image;
         }
         public static Mat DrawContour(Mat image, IEnumerable<Point> countour)
         {
             Cv2.DrawContours(image, new List<IEnumerable<Point>> { countour }, -1, Scalar.Red, 5);
-
             return image;
         }
         public static Mat LoadImage(string filePath) => Cv2.ImRead(filePath);
