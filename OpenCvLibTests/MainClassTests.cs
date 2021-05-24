@@ -85,7 +85,19 @@ namespace OpenCvLib.Tests
         }
 
         [Fact()]
-        public void FindContoursTest()
+        public void FindContours_SortedContoursTest()
+        {
+            using var testObject = MainClass.LoadImage(TestImage);
+            using var testObject2 = MainClass.ProccessToGrayContuour(testObject);
+            var contours = MainClass.FindContours_SortedContours(testObject2);
+
+
+            using var result = MainClass.DrawContour(testObject.Clone(), contours);
+            SaveAndCheckIfSavedCorrect(result);
+
+        }
+        [Fact()]
+        public void FindContours_BiggestContourTest()
         {
             using var testObject = MainClass.LoadImage(TestImage);
             using var testObject2 = MainClass.ProccessToGrayContuour(testObject);

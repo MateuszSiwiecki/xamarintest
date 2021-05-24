@@ -17,16 +17,19 @@ namespace OpenCvLib
             var grayOutput = new Mat();
             var bilateralFilter = new Mat();
             var edgedResult = new Mat();
+            var dilateResult = new Mat();
             Cv2.CvtColor(image, grayOutput, ColorConversionCodes.BGR2GRAY);
             Cv2.BilateralFilter(grayOutput, bilateralFilter, 11, 17, 17);
             Cv2.Canny(bilateralFilter, edgedResult, 30, 200);
+            Cv2.Dilate(edgedResult, dilateResult, new Mat());
 
-            return edgedResult;
+            //return edgedResult;
+            return dilateResult;
         }
-        public static Point[] FindContours_SortedContours(Mat image)
+        public static List<Point[]> FindContours_SortedContours(Mat image)
         {
-            Cv2.FindContours(image, out var foundedContour, out var hierarchy, RetrievalModes.Tree, ContourApproximationModes.ApproxSimple);
-            var sortedContour = foundedContour.OrderByDescending(ContourArea).Where((x, y) => y < 8).ToArray();
+            Cv2.FindContours(image, out var foundedContour, out var hierarchy, RetrievalModes.Tree, ContourApproximationModes.ApproxNone);
+            var sortedContour = foundedContour.OrderByDescending(ContourArea).Where((x, y) => y < 1).ToArray();
 
             List<Point[]> result = new List<Point[]>();
             foreach (var contour in sortedContour)
@@ -39,7 +42,13 @@ namespace OpenCvLib
                 result.Add(approx);
             }
 
-            return foundedContour[2];
+
+            return result;
+        }
+        public static Point[] FindContours_BiggestContour(Mat image)
+        {
+            Cv2.FindContours(image, out var foundedContour, out var hierarchy, RetrievalModes.Tree, ContourApproximationModes.ApproxNone);
+            return foundedContour.OrderByDescending(ContourArea).First();
         }
         public static double ContourArea(Point[] x) => Cv2.ContourArea(x, true);
         public static Mat DrawContour(Mat image, IEnumerable<IEnumerable<Point>> contours)
