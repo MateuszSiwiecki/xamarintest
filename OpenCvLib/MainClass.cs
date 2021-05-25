@@ -108,10 +108,10 @@ namespace OpenCvLib
         public static Mat Transform(Mat inputImage, Point2f[] toTransform) 
             => Transform(inputImage, toTransform, new Point2f[]
                 {
+                    new Point2f(0, 0),
                     new Point2f(inputImage.Width, 0),
                     new Point2f(inputImage.Width, inputImage.Height),
                     new Point2f(0, inputImage.Height),
-                    new Point2f(0, 0)
                 }, new Size(inputImage.Width, inputImage.Height));
         public static Mat Transform(Mat inputImage, Point2f[] toTransform, Point2f[] destination, double width, double heigth) 
             => Transform(inputImage, toTransform, destination, new Size(width, heigth));

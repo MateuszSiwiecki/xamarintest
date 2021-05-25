@@ -22,12 +22,14 @@ namespace OpenCvLib.Tests
         public const string TestImageRecipe = @"C:\Users\mateu\OneDrive\Desktop\QR\documents\recepta_test1.png";
         public const string TestImageRevo = @"C:\Users\mateu\OneDrive\Desktop\QR\documents\rewol_test.png";
         public const string TestImageRevo2 = @"C:\Users\mateu\OneDrive\Desktop\QR\documents\revol2_test.png";
+        public const string TestImageRevo3 = @"C:\Users\mateu\OneDrive\Desktop\QR\documents\revol3_test.png";
         public static IEnumerable<object[]> ImagePaths =>
             new List<object[]>
             {
             new object[] { TestImageRecipe },
             new object[] { TestImageRevo },
             new object[] { TestImageRevo2 },
+            new object[] { TestImageRevo3 },
             };
 
         private static string TestImageDirectory(string additionalInfo = "", [CallerMemberName] string testName = "")
