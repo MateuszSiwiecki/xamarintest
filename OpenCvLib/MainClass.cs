@@ -11,7 +11,8 @@ namespace OpenCvLib
         public static Mat ProcessImage(Mat image)
         {
             using var grayImage = ProccessToGrayContuour(image.Clone());
-            var contoursOfDocument = FindContours_BiggestContour(grayImage);
+            var contoursOfDocument = FindContours_BiggestContourFloat(grayImage);
+            using var transformedImage = Transform(image, contoursOfDocument);
             return image;
         }
         public static Mat ProccessToGrayContuour(Mat image)
@@ -48,7 +49,17 @@ namespace OpenCvLib
             }
             return result;
         }
-        public static Point[] FindContours_BiggestContour(Mat image)
+        public static Point2f[] FindContours_BiggestContourFloat(Mat image)
+        {
+            var points = FindContours_BiggestContourInt(image);
+            var output = new Point2f[points.Length];
+            for (int i = 0; i < points.Length; i++)
+            {
+                output[i] = points[i];
+            }
+            return output;
+        }
+        public static Point[] FindContours_BiggestContourInt(Mat image)
         {
             Cv2.FindContours(image, out var foundedContours, out var hierarchy, RetrievalModes.Tree, ContourApproximationModes.ApproxNone);
             var contourOfDocument = foundedContours.OrderByDescending(ContourArea).First();
@@ -70,6 +81,14 @@ namespace OpenCvLib
         }
         public static Mat LoadImage(string filePath) => Cv2.ImRead(filePath);
         public static void SaveImage(string filePath, Mat imageToSave) => Cv2.ImWrite(filePath, imageToSave);
+        public static Mat Transform(Mat inputImage, Point2f[] toTransform) 
+            => Transform(inputImage, toTransform, new Point2f[]
+                {
+                    new Point2f(0, 0),
+                    new Point2f(inputImage.Width, 0),
+                    new Point2f(inputImage.Width, inputImage.Height),
+                    new Point2f(0, inputImage.Height)
+                }, new Size(inputImage.Width, inputImage.Height));
         public static Mat Transform(Mat inputImage, Point2f[] toTransform, Point2f[] destination, double width, double heigth) 
             => Transform(inputImage, toTransform, destination, new Size(width, heigth));
         public static Mat Transform(Mat inputImage, Point2f[] toTransform, Point2f[] destination, Size size)

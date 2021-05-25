@@ -99,7 +99,7 @@ namespace OpenCvLib.Tests
         private static Point[] BiggestContourExec(Mat testObject)
         {
             using var testObject2 = MainClass.ProccessToGrayContuour(testObject);
-            return MainClass.FindContours_BiggestContour(testObject2);
+            return MainClass.FindContours_BiggestContourInt(testObject2);
         }
         [Fact()]
         public void FindContours_DrawContour_BiggestContourTest()
