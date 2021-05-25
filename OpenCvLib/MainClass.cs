@@ -70,6 +70,17 @@ namespace OpenCvLib
         }
         public static Mat LoadImage(string filePath) => Cv2.ImRead(filePath);
         public static void SaveImage(string filePath, Mat imageToSave) => Cv2.ImWrite(filePath, imageToSave);
+        public static Mat Transform(Mat inputImage, Point2f[] toTransform, Point2f[] destination, double width, double heigth) 
+            => Transform(inputImage, toTransform, destination, new Size(width, heigth));
+        public static Mat Transform(Mat inputImage, Point2f[] toTransform, Point2f[] destination, Size size)
+        {
+            var output = new Mat();
+
+            var m = Cv2.GetPerspectiveTransform(toTransform, destination);
+            Cv2.WarpPerspective(inputImage, output, m, size);
+
+            return output;
+        }
         public static Mat Rotate(Mat image, double angle, Point2f? center = null, double scale = 1.0)
         {
             // grab the dimensions of the image

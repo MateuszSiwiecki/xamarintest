@@ -124,9 +124,25 @@ namespace OpenCvLib.Tests
         public void DrawContourTest_RandomContour(int xLeft, int xRight, int yUp, int yDown)
         {
             using var testObject = MainClass.LoadImage(TestImage);
-            using var result = MainClass.DrawContour(testObject.Clone(), new List<Point> 
-            { 
-                new Point(xLeft, yUp) , 
+            using var result = MainClass.DrawContour(testObject.Clone(), new List<Point>
+            {
+                new Point(xLeft, yUp) ,
+                new Point(xRight, yUp) ,
+                new Point(xRight, yDown),
+                new Point(xLeft, yDown) ,
+            });
+
+            SaveAndCheckIfSavedCorrect(result, $"{xLeft}x{xRight}x{yUp}x{yDown}");
+        }
+
+        [InlineData(10, 1000, 10, 1000)]
+        [Theory()]
+        public void TransformTest(int xLeft, int xRight, int yUp, int yDown)
+        {
+            using var testObject = MainClass.LoadImage(TestImage);
+            using var result = MainClass.DrawContour(testObject.Clone(), new List<Point>
+            {
+                new Point(xLeft, yUp) ,
                 new Point(xRight, yUp) ,
                 new Point(xRight, yDown),
                 new Point(xLeft, yDown) ,
