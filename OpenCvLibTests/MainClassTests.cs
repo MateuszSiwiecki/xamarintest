@@ -21,6 +21,14 @@ namespace OpenCvLib.Tests
         public const string TestPath = @"C:\Users\mateu\OneDrive\Desktop\QR\documents";
         public const string TestImageRecipe = @"C:\Users\mateu\OneDrive\Desktop\QR\documents\recepta_test1.png";
         public const string TestImageRevo = @"C:\Users\mateu\OneDrive\Desktop\QR\documents\rewol_test.png";
+        public const string TestImageRevo2 = @"C:\Users\mateu\OneDrive\Desktop\QR\documents\revol2_test.png";
+        public static IEnumerable<object[]> ImagePaths =>
+            new List<object[]>
+            {
+            new object[] { TestImageRecipe },
+            new object[] { TestImageRevo },
+            new object[] { TestImageRevo2 },
+            };
 
         private static string TestImageDirectory(string additionalInfo = "", [CallerMemberName] string testName = "")
         {
@@ -40,8 +48,7 @@ namespace OpenCvLib.Tests
             MainClass.SaveImage(savePath, result);
             Assert.True(File.Exists(savePath));
         }
-        [InlineData(TestImageRecipe)]
-        [InlineData(TestImageRevo)]
+        [MemberData(nameof(ImagePaths))]
         [Theory()]
         public void RotateTest(string imagePath)
         {
@@ -54,8 +61,7 @@ namespace OpenCvLib.Tests
         }
 
 
-        [InlineData(TestImageRecipe)]
-        [InlineData(TestImageRevo)]
+        [MemberData(nameof(ImagePaths))]
         [Theory()]
         public void OpenCvCorrectLoadTest_ShouldLoadAndSaveImage_NoChangesToImage(string imagePath)
         {
@@ -65,8 +71,7 @@ namespace OpenCvLib.Tests
             SaveAndCheckIfSavedCorrect(testObject, Path.GetFileName(imagePath));
         }
 
-        [InlineData(TestImageRecipe)]
-        [InlineData(TestImageRevo)]
+        [MemberData(nameof(ImagePaths))]
         [Theory()]
         public void ProccessToGrayContuourTest(string imagePath)
         {
@@ -91,9 +96,8 @@ namespace OpenCvLib.Tests
             SaveAndCheckIfSavedCorrect(result, $"{dimensionX}x{dimensionY}_{Path.GetFileName(imagePath)}");
         }
 
+        [MemberData(nameof(ImagePaths))]
         [Theory()]
-        [InlineData(TestImageRevo)]
-        [InlineData(TestImageRecipe)]
         public void FindContours_SortedContoursTest(string imagePath)
         {
             using var testObject = MainClass.LoadImage(imagePath);
@@ -104,9 +108,9 @@ namespace OpenCvLib.Tests
             using var result = MainClass.DrawContour(testObject.Clone(), contours);
             SaveAndCheckIfSavedCorrect(result, Path.GetFileName(imagePath));
         }
+
+        [MemberData(nameof(ImagePaths))]
         [Theory()]
-        [InlineData(TestImageRevo)]
-        [InlineData(TestImageRecipe)]
         public void FindContours_DrawContour_BiggestContourTest(string imagePath)
         {
             using var testObject = MainClass.LoadImage(imagePath);
@@ -207,9 +211,8 @@ namespace OpenCvLib.Tests
             SaveAndCheckIfSavedCorrect(result, $"{point1x}x{point2x}x{point3x}x{point4x}_{Path.GetFileName(imagePath)}_result");
         }
 
+        [MemberData(nameof(ImagePaths))]
         [Theory()]
-        [InlineData(TestImageRevo)]
-        [InlineData(TestImageRecipe)]
         public void ProcessImageTest(string imagePath)
         {
             using var result = MainClass.ProcessImage(imagePath);
