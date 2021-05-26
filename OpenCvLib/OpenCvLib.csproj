@@ -5,9 +5,4 @@
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="OpenCV" Version="2.4.11" />
-    <PackageReference Include="OpenCvSharp3-AnyCPU" Version="4.0.0.20181129" />
-  </ItemGroup>
-
 </Project>

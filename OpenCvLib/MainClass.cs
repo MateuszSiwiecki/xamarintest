@@ -12,8 +12,26 @@ namespace OpenCvLib
         {
             using var grayImage = ProccessToGrayContuour(image.Clone());
             var contoursOfDocument = FindContours_BiggestContourFloat(grayImage);
-            var transformedImage = Transform(image, contoursOfDocument);
-            return transformedImage;
+            using var transformedImage = Transform(image, contoursOfDocument);
+            //return transformedImage;
+            return ProcessToPaperView(transformedImage, 255, 255);
+        }
+        public static Mat ProcessToPaperView(Mat image) => ProcessToPaperView(image, 0, 0);
+        public static Mat ProcessToPaperView(Mat image, int thresh, int maxval)
+        {
+            var color = new Mat();
+            var bilateralFilter = new Mat();
+            var threshold = new Mat();
+            Cv2.CvtColor(image.Clone(), color, ColorConversionCodes.BGR2GRAY);
+            Cv2.Threshold(color.Clone(), threshold, thresh, maxval, ThresholdTypes.Binary);
+            Cv2.BilateralFilter(threshold.Clone(), bilateralFilter, 20, 20, 10);
+
+            var output = (threshold).Clone();
+            color.Dispose();
+            bilateralFilter.Dispose();
+            threshold.Dispose();
+
+            return output;
         }
         public static Mat ProccessToGrayContuour(Mat image)
         {

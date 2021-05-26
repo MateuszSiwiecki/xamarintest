@@ -118,7 +118,7 @@ namespace OpenCvLib.Tests
             using var testObject = MainClass.LoadImage(imagePath);
             using var testObject2 = MainClass.ProccessToGrayContuour(testObject);
 
-            var contours =  MainClass.FindContours_BiggestContourInt(testObject2);
+            var contours = MainClass.FindContours_BiggestContourInt(testObject2);
 
             using var result = MainClass.DrawContour(testObject.Clone(), contours);
             SaveAndCheckIfSavedCorrect(result, Path.GetFileName(imagePath));
@@ -219,6 +219,33 @@ namespace OpenCvLib.Tests
         {
             using var result = MainClass.ProcessImage(imagePath);
             SaveAndCheckIfSavedCorrect(result, Path.GetFileName(imagePath));
+        }
+
+        [MemberData(nameof(ImagePaths))]
+        [Theory()]
+        public void ProcessToPaperViewTest(string imagePath)
+        {
+            using var testObject = MainClass.LoadImage(imagePath);
+
+            using var result = MainClass.ProcessToPaperView(testObject);
+
+            SaveAndCheckIfSavedCorrect(result, Path.GetFileName(imagePath));
+        }
+        [MemberData(nameof(ImagePaths))]
+        [Theory()]
+        public void ProcessToPaperViewTest_MultiParamsForThreshole(string imagePath)
+        {
+            using var testObject = MainClass.LoadImage(imagePath);
+
+            for (int i = 205; i <= 255; i += 10)
+            {
+                for (int j = 205; j <= 255; j += 10)
+                {
+                    using var result = MainClass.ProcessToPaperView(testObject, i, j);
+
+                    SaveAndCheckIfSavedCorrect(result, $"{Path.GetFileName(imagePath)}_{i}_{j}");
+                }
+            }
         }
     }
 }
